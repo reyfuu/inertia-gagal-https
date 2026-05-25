@@ -1,0 +1,173 @@
+/* 
+ * Premium Glassmorphism Theme for TAMP Admin Dashboard
+ * Desain modern berbasis efek kaca, blur, dan gradasi radial.
+ */
+
+:root {
+    --glass-bg: rgba(30, 41, 59, 0.7); /* Latar belakang transparan kartu */
+    --glass-border: rgba(255, 255, 255, 0.1); /* Border tipis untuk efek kaca */
+    --glass-blur: blur(12px); /* Efek blur di belakang elemen */
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); /* Gradasi warna utama */
+}
+
+/* Pengaturan Latar Belakang Global (Body) */
+body {
+    background-color: #0f172a !important; /* Warna gelap dasar */
+    background-image:
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.25) 0%, transparent 70%),
+        radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.25) 0%, transparent 70%) !important; /* Efek cahaya radial di sudut */
+    background-attachment: fixed !important; /* Latar tetap saat di-scroll */
+    color: #e2e8f0 !important; /* Warna teks utama terang */
+}
+
+/* Styling Sidebar (Navbar Vertical) */
+.navbar-vertical {
+    background: rgba(15, 23, 42, 0.8) !important; /* Latar gelap transparan sidebar */
+    backdrop-filter: blur(10px); /* Blur sidebar */
+    border-right: 1px solid var(--glass-border) !important; /* Garis pemisah sidebar */
+}
+
+/* Sinkronisasi Konten dan Sidebar agar Berdampingan */
+@media (min-width: 992px) {
+    .navbar-vertical.navbar-expand-lg {
+        width: 15rem !important; /* Lebar sidebar */
+        position: fixed !important; /* Sidebar menempel di kiri */
+        top: 0;
+        bottom: 0;
+        z-index: 1030;
+    }
+    .page-wrapper {
+        margin-left: 15rem !important; /* Jarak konten agar tidak tertutup sidebar */
+        min-height: 100vh !important;
+        display: block !important;
+        padding-top: 1.5rem !important; /* Jarak aman dari atas */
+    }
+
+}
+
+/* Link Navigasi Sidebar */
+.nav-link {
+    color: #94a3b8 !important; /* Warna teks menu default */
+    transition: all 0.3s ease; /* Transisi halus saat hover */
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: white !important; /* Warna teks saat aktif/hover */
+    background: rgba(255, 255, 255, 0.05) !important; /* Highlight latar menu */
+}
+
+/* Styling Kartu Glassmorphism (Umum & Statistik) */
+.card,
+.glass-card,
+.stat-card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 20px !important; /* Sudut melengkung premium */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important; /* Bayangan halus */
+    color: white !important;
+    padding: 24px !important; /* Ruang dalam yang lega */
+    margin-bottom: 1rem !important; /* Jarak antar kartu */
+}
+
+/* Fix untuk Menghilangkan Ruang Header Default */
+.page-header {
+    display: none !important;
+}
+
+/* Pengaturan Layout Container */
+.container-fluid, .container-xl {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+/* Tipografi Statistik */
+.stat-value {
+    font-size: 2.5rem !important; /* Angka statistik besar */
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    margin: 10px 0 !important;
+}
+
+.stat-label {
+    font-size: 0.75rem !important; /* Label kecil di atas angka */
+    color: #94a3b8 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* Styling Tabel Admin */
+.table {
+    color: #e2e8f0 !important;
+}
+
+.table thead th {
+    background: rgba(0, 0, 0, 0.2) !important; /* Latar header tabel */
+    border-bottom: 2px solid var(--glass-border) !important;
+    color: #94a3b8 !important;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 15px !important;
+}
+
+.table tbody td {
+    padding: 15px !important; /* Ruang dalam baris tabel */
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02) !important; /* Highlight saat baris di-hover */
+}
+
+/* Styling Form Input (Text & Select) */
+.form-control,
+.form-select {
+    background: rgba(15, 23, 42, 0.5) !important; /* Latar input gelap transparan */
+    border: 1px solid var(--glass-border) !important;
+    color: white !important;
+    border-radius: 12px !important;
+    padding: 10px 15px !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: rgba(15, 23, 42, 0.7) !important;
+    border-color: #6366f1 !important; /* Warna border saat fokus */
+    box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Styling Tombol Utama (Primary) */
+.btn-primary {
+    background: var(--primary-gradient) !important; /* Gradasi pada tombol */
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+    padding: 10px 25px !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+}
+
+/* Styling Badge/Label Status */
+.badge {
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+
+/* Header & Footer di Dalam Kartu */
+.card-header {
+    background: transparent !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    padding: 20px 24px !important;
+}
+
+.card-footer {
+    background: transparent !important;
+    border-top: 1px solid var(--glass-border) !important;
+    padding: 15px 24px !important;
+}
+
+/* Visibilitas Teks Khusus Sidebar */
+.navbar-brand-autodark, .navbar-vertical .nav-link-title {
+    color: white !important;
+}
