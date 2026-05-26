@@ -170,7 +170,7 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                             value={searchVal}
                             onChange={e => setSearchVal(e.target.value)}
                             placeholder="Cari topik bimbingan..."
-                            className="w-full bg-slate-900/40 border border-slate-800/60 rounded-2xl py-3 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                            className="w-full bg-white dark:bg-slate-900/40 border border-gray-200 dark:border-slate-800/60 rounded-2xl py-3 pl-11 pr-4 text-sm text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                         />
                     </form>
 
@@ -186,11 +186,11 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                 </div>
 
                 {/* Table */}
-                <div className="bg-slate-900/30 border border-slate-800/40 rounded-3xl overflow-hidden shadow-lg animate-fade-in">
+                <div className="bg-white dark:bg-slate-900/30 border border-gray-200 dark:border-slate-800/40 rounded-3xl overflow-hidden shadow-lg animate-fade-in">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-slate-800/50 bg-slate-900/20 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                                <tr className="border-b border-gray-200 dark:border-slate-800/50 bg-gray-50 dark:bg-slate-900/20 text-gray-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
                                     <th className="py-4.5 px-6">Mahasiswa</th>
                                     <th className="py-4.5 px-6">Dosen</th>
                                     <th className="py-4.5 px-6">Topik Pertemuan</th>
@@ -201,26 +201,26 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                     <th className="py-4.5 px-6 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-800/30 text-sm text-slate-300">
+                            <tbody className="divide-y divide-gray-200 dark:divide-slate-800/30 text-sm text-gray-700 dark:text-slate-300">
                                 {bimbingans.data.length === 0 ? (
                                     <tr>
-                                        <td colSpan="8" className="py-12 text-center text-slate-500">
+                                        <td colSpan="8" className="py-12 text-center text-gray-500 dark:text-slate-500">
                                             Tidak ada riwayat bimbingan.
                                         </td>
                                     </tr>
                                 ) : (
                                     bimbingans.data.map((b) => (
-                                        <tr key={b.id} className="hover:bg-slate-900/10 transition-colors">
-                                            <td className="py-4 px-6 font-semibold text-slate-200">
+                                        <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-slate-900/10 transition-colors">
+                                            <td className="py-4 px-6 font-semibold text-gray-900 dark:text-slate-200">
                                                 {b.user?.name || '-'}
                                             </td>
                                             <td className="py-4 px-6 text-slate-400">
                                                 {b.dosen?.name || '-'}
                                             </td>
                                             <td className="py-4 px-6">
-                                                <span className="font-semibold text-slate-200">{b.topik}</span>
+                                                <span className="font-semibold text-gray-900 dark:text-slate-200">{b.topik}</span>
                                                 {b.komentar && (
-                                                    <span className="flex items-center gap-1 text-xs text-indigo-400 mt-1 font-medium">
+                                                    <span className="flex items-center gap-1 text-xs text-indigo-600 dark:text-indigo-400 mt-1 font-medium">
                                                         <MessageSquare className="w-3.5 h-3.5" /> Ada komentar dosen
                                                     </span>
                                                 )}
@@ -228,7 +228,7 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                             <td className="py-4 px-6 text-slate-400">
                                                 {new Date(b.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                                             </td>
-                                            <td className="py-4 px-6 text-slate-400 uppercase text-xs font-semibold">
+                                            <td className="py-4 px-6 text-gray-600 dark:text-slate-400 uppercase text-xs font-semibold">
                                                 {b.type}
                                             </td>
                                             <td className="py-4 px-6">
@@ -243,14 +243,14 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                                 <div className="inline-flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => handleOpenComments(b)}
-                                                    className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-indigo-950 hover:text-indigo-300 text-slate-400 transition-all border border-slate-700/50 cursor-pointer"
+                                                    className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-950 hover:text-indigo-600 dark:hover:text-indigo-300 text-gray-600 dark:text-slate-400 transition-all border border-gray-300 dark:border-slate-700/50 cursor-pointer"
                                                     title="Riwayat Komentar"
                                                 >
                                                     <MessageSquare className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleOpenEdit(b)}
-                                                    className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-indigo-700 hover:text-indigo-200 text-slate-400 transition-all border border-slate-700/50 cursor-pointer"
+                                                    className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-700 hover:text-indigo-600 dark:hover:text-indigo-200 text-gray-600 dark:text-slate-400 transition-all border border-gray-300 dark:border-slate-700/50 cursor-pointer"
                                                     title={roleName === 'dosen' ? 'Beri Komentar & Review' : 'Detail / Ubah'}
                                                 >
                                                     <Edit className="w-4 h-4" />
@@ -258,7 +258,7 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                                 {(roleName === 'super_admin' || roleName === 'ka_prodi' || (roleName === 'mahasiswa' && b.user_id === currentUser.id)) && (
                                                     <button
                                                         onClick={() => handleDelete(b.id)}
-                                                        className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-rose-950 hover:text-rose-300 text-slate-400 transition-all border border-slate-700/50 cursor-pointer"
+                                                        className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-950 hover:text-rose-600 dark:hover:text-rose-300 text-gray-600 dark:text-slate-400 transition-all border border-gray-300 dark:border-slate-700/50 cursor-pointer"
                                                         title="Hapus"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -280,32 +280,32 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
             {/* Modal Riwayat Komentar */}
             {commentModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                    <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-                        <div className="flex items-center justify-between border-b border-slate-800/60 px-6 py-4">
-                            <h3 className="font-bold text-lg text-slate-100">Riwayat Komentar</h3>
+                    <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+                        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800/60 px-6 py-4">
+                            <h3 className="font-bold text-lg text-gray-900 dark:text-slate-100">Riwayat Komentar</h3>
                             <button
                                 type="button"
                                 onClick={() => setCommentModalOpen(false)}
-                                className="text-slate-400 hover:text-slate-100 p-1.5 hover:bg-slate-800 rounded-lg cursor-pointer"
+                                className="text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         <div className="flex-1 overflow-auto px-6 py-4">
-                            <p className="text-sm font-medium text-slate-300 border-b border-slate-800/60 pb-3 mb-4">
+                            <p className="text-sm font-medium text-gray-700 dark:text-slate-300 border-b border-gray-200 dark:border-slate-800/60 pb-3 mb-4">
                                 History log
                                 {commentMahasiswaName && (
-                                    <span className="text-slate-500 font-normal"> · {commentMahasiswaName}</span>
+                                    <span className="text-gray-500 dark:text-slate-500 font-normal"> · {commentMahasiswaName}</span>
                                 )}
                             </p>
 
                             {loadingComments ? (
-                                <div className="flex items-center justify-center py-12 text-slate-500 text-sm">
+                                <div className="flex items-center justify-center py-12 text-gray-500 dark:text-slate-500 text-sm">
                                     Memuat riwayat...
                                 </div>
                             ) : commentHistory.length === 0 ? (
-                                <div className="rounded-xl border border-slate-800/60 bg-slate-950/50 px-4 py-8 text-center text-sm text-slate-500">
+                                <div className="rounded-xl border border-gray-200 dark:border-slate-800/60 bg-gray-50 dark:bg-slate-950/50 px-4 py-8 text-center text-sm text-gray-500 dark:text-slate-500">
                                     Belum ada komentar dari dosen pembimbing.
                                 </div>
                             ) : (
@@ -313,15 +313,15 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                     {commentHistory.map((item) => (
                                         <div
                                             key={item.id}
-                                            className="rounded-xl border border-slate-800/60 bg-slate-950/80 px-4 py-3.5"
+                                            className="rounded-xl border border-gray-200 dark:border-slate-800/60 bg-gray-50 dark:bg-slate-950/80 px-4 py-3.5"
                                         >
-                                            <p className="text-xs text-slate-500 mb-2">
+                                            <p className="text-xs text-gray-500 dark:text-slate-500 mb-2">
                                                 Bimbingan · Dosen: {item.dosen_name}
                                                 {item.topik && (
-                                                    <span className="text-slate-600"> · {item.topik}</span>
+                                                    <span className="text-gray-600 dark:text-slate-600"> · {item.topik}</span>
                                                 )}
                                             </p>
-                                            <p className="text-sm text-slate-100 whitespace-pre-wrap leading-relaxed">
+                                            <p className="text-sm text-gray-900 dark:text-slate-100 whitespace-pre-wrap leading-relaxed">
                                                 {item.komentar}
                                             </p>
                                         </div>
@@ -330,11 +330,11 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                             )}
                         </div>
 
-                        <div className="border-t border-slate-800/60 px-6 py-4">
+                        <div className="border-t border-gray-200 dark:border-slate-800/60 px-6 py-4">
                             <button
                                 type="button"
                                 onClick={() => setCommentModalOpen(false)}
-                                className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 px-5 rounded-xl text-sm transition-all cursor-pointer"
+                                className="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 font-semibold py-2.5 px-5 rounded-xl text-sm transition-all cursor-pointer"
                             >
                                 Batal
                             </button>
@@ -346,14 +346,14 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
             {/* Modal Bimbingan */}
             {modalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                    <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-                        <div className="flex items-center justify-between border-b border-slate-800/60 px-6 py-4.5">
-                            <h3 className="font-bold text-slate-200">
+                    <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800/60 px-6 py-4.5">
+                            <h3 className="font-bold text-gray-900 dark:text-slate-200">
                                 {editMode 
                                     ? (roleName === 'dosen' ? 'Tinjau & Komentar Bimbingan' : 'Ubah Bimbingan') 
                                     : 'Tambah Log Bimbingan'}
                             </h3>
-                            <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-slate-100 p-1.5 hover:bg-slate-800 rounded-lg">
+                            <button onClick={() => setModalOpen(false)} className="text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
@@ -363,11 +363,11 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                             {roleName !== 'mahasiswa' && roleName !== 'dosen' && (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <label className="text-xs text-slate-400 font-semibold uppercase">Mahasiswa</label>
+                                        <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Mahasiswa</label>
                                         <select
                                             value={data.user_id}
                                             onChange={e => setData('user_id', e.target.value)}
-                                            className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"
+                                            className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                                         >
                                             <option value="">Pilih Mahasiswa</option>
                                             {mahasiswas.map(m => (
@@ -378,11 +378,11 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-xs text-slate-400 font-semibold uppercase">Dosen</label>
+                                        <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Dosen</label>
                                         <select
                                             value={data.dosen_id}
                                             onChange={e => setData('dosen_id', e.target.value)}
-                                            className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"
+                                            className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                                         >
                                             <option value="">Pilih Dosen</option>
                                             {dosens.map(d => (
@@ -397,26 +397,26 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                             {/* Core Log Fields (Readonly for Lecturers) */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs text-slate-400 font-semibold uppercase">Topik Pertemuan</label>
+                                    <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Topik Pertemuan</label>
                                     <input
                                         type="text"
                                         value={data.topik}
                                         onChange={e => setData('topik', e.target.value)}
                                         disabled={roleName === 'dosen'}
                                         placeholder="Judul atau topik pembahasan"
-                                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
+                                        className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                     />
                                     {errors.topik && <p className="text-rose-400 text-xs">{errors.topik}</p>}
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-xs text-slate-400 font-semibold uppercase">Tanggal</label>
+                                    <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Tanggal</label>
                                     <input
                                         type="date"
                                         value={data.tanggal}
                                         onChange={e => setData('tanggal', e.target.value)}
                                         disabled={roleName === 'dosen'}
-                                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
+                                        className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                     />
                                     {errors.tanggal && <p className="text-rose-400 text-xs">{errors.tanggal}</p>}
                                 </div>
@@ -424,12 +424,12 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs text-slate-400 font-semibold uppercase">Jenis Bimbingan</label>
+                                    <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Jenis Bimbingan</label>
                                     <select
                                         value={data.type}
                                         onChange={e => setData('type', e.target.value)}
                                         disabled={roleName === 'dosen'}
-                                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
+                                        className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                     >
                                         <option value="skripsi">Skripsi</option>
                                         <option value="proposal">Proposal</option>
@@ -440,11 +440,11 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                 {/* Status selection for Dosen / Admin */}
                                 {(roleName === 'dosen' || roleName === 'super_admin' || roleName === 'ka_prodi') && (
                                     <div className="space-y-1.5">
-                                        <label className="text-xs text-slate-400 font-semibold uppercase">Status Persetujuan</label>
+                                        <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Status Persetujuan</label>
                                         <select
                                             value={data.status}
                                             onChange={e => setData('status', e.target.value)}
-                                            className="w-full bg-slate-950/50 border border-slate-850 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"
+                                            className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-850 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                                         >
                                             <option value="Review">Review</option>
                                             <option value="Disetujui">Disetujui</option>
@@ -457,38 +457,38 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
 
                             {/* Isi Bimbingan */}
                             <div className="space-y-1.5">
-                                <label className="text-xs text-slate-400 font-semibold uppercase">Isi Bimbingan</label>
+                                <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Isi Bimbingan</label>
                                 <textarea
                                     value={data.isi}
                                     onChange={e => setData('isi', e.target.value)}
                                     disabled={roleName === 'dosen'}
                                     rows="4"
                                     placeholder="Tuliskan catatan progres atau isi bimbingan..."
-                                    className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
+                                    className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                 />
                                 {errors.isi && <p className="text-rose-400 text-xs">{errors.isi}</p>}
                             </div>
 
                             {/* Komentar Dosen (Only editable by Dosen / Admin) */}
                             <div className="space-y-1.5">
-                                <label className="text-xs text-slate-400 font-semibold uppercase">Komentar / Feedback Dosen</label>
+                                <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Komentar / Feedback Dosen</label>
                                 <textarea
                                     value={data.komentar}
                                     onChange={e => setData('komentar', e.target.value)}
                                     disabled={roleName === 'mahasiswa'}
                                     rows="3"
                                     placeholder={roleName === 'mahasiswa' ? "Belum ada feedback dari Dosen Pembimbing." : "Berikan feedback atau catatan revisi..."}
-                                    className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
+                                    className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                 />
                                 {errors.komentar && <p className="text-rose-400 text-xs">{errors.komentar}</p>}
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="border-t border-slate-800/60 pt-4 flex justify-end gap-3">
+                            <div className="border-t border-gray-200 dark:border-slate-800/60 pt-4 flex justify-end gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setModalOpen(false)}
-                                    className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-4 rounded-xl text-sm transition-all"
+                                    className="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 font-bold py-2.5 px-4 rounded-xl text-sm transition-all"
                                 >
                                     Tutup
                                 </button>

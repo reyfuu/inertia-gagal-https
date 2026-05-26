@@ -198,8 +198,8 @@ class BimbinganController extends Controller
         ])->validate();
 
         if ($roleName === 'dosen') {
-            // Proses update untuk dosen
-            $bimbingan->update([
+            // Proses update untuk dosen (hanya status dan komentar)
+            Bimbingan::query()->where('id', $bimbingan->id)->update([
                 'status' => $request->status,
                 'komentar' => $request->komentar,
             ]);
@@ -209,7 +209,7 @@ class BimbinganController extends Controller
                 return back()->with('error', 'Anda tidak memiliki akses untuk mengubah bimbingan ini.');
             }
             // Mengubah data bimbingan mahasiswa (status di-reset ke Review)
-            $bimbingan->update([
+            Bimbingan::query()->where('id', $bimbingan->id)->update([
                 'topik' => $request->topik,
                 'tanggal' => $request->tanggal,
                 'type' => $request->type,
@@ -218,7 +218,7 @@ class BimbinganController extends Controller
             ]);
         } else {
             // Admin melakukan update penuh
-            $bimbingan->update([
+            Bimbingan::query()->where('id', $bimbingan->id)->update([
                 'user_id' => $request->user_id,
                 'dosen_id' => $request->dosen_id,
                 'topik' => $request->topik,
@@ -302,8 +302,8 @@ class BimbinganController extends Controller
             return back()->with('error', 'Anda tidak memiliki akses untuk menghapus bimbingan ini.');
         }
 
-        // Menghapus bimbingan
-        $bimbingan->delete();
+        // Menghapus bimbingan menggunakan query builder
+        Bimbingan::query()->where('id', $bimbingan->id)->delete();
 
         return redirect()->route('bimbingan.index')->with('success', 'Bimbingan berhasil dihapus.');
     }

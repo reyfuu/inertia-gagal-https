@@ -199,8 +199,8 @@ class LaporanMingguanController extends Controller
         ])->validate();
 
         if ($roleName === 'dosen') {
-            // Proses update untuk dosen
-            $laporanMingguan->update([
+            // Proses update untuk dosen (hanya status persetujuan)
+            LaporanMingguan::query()->where('id', $laporanMingguan->id)->update([
                 'status' => $request->status,
             ]);
         } elseif ($roleName === 'mahasiswa') {
@@ -209,7 +209,7 @@ class LaporanMingguanController extends Controller
                 return back()->with('error', 'Anda tidak memiliki akses untuk mengubah laporan ini.');
             }
             // Mengubah data laporan mingguan (status di-reset ke pending)
-            $laporanMingguan->update([
+            LaporanMingguan::query()->where('id', $laporanMingguan->id)->update([
                 'week' => $request->week,
                 'isi' => $request->isi,
                 'status' => 'pending',
@@ -221,7 +221,7 @@ class LaporanMingguanController extends Controller
             if (!$laporan) {
                 return back()->with('error', 'Mahasiswa yang dipilih tidak memiliki Laporan Akademik.');
             }
-            $laporanMingguan->update([
+            LaporanMingguan::query()->where('id', $laporanMingguan->id)->update([
                 'mahasiswa_id' => $request->mahasiswa_id,
                 'laporan_id' => $laporan->id,
                 'dosen_id' => $laporan->dosen_id ?: $student->dosen_pembimbing_id,
@@ -252,8 +252,8 @@ class LaporanMingguanController extends Controller
             return back()->with('error', 'Anda tidak memiliki akses untuk menghapus laporan ini.');
         }
 
-        // Menghapus laporan mingguan
-        $laporanMingguan->delete();
+        // Menghapus laporan mingguan menggunakan query builder
+        LaporanMingguan::query()->where('id', $laporanMingguan->id)->delete();
 
         return redirect()->route('laporan-mingguan.index')->with('success', 'Laporan mingguan berhasil dihapus.');
     }

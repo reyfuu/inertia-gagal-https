@@ -107,8 +107,8 @@ class UserController extends Controller
             'telegram_chat_id' => 'Telegram Chat ID',
         ])->validate();
 
-        // Menyimpan data utama pengguna ke dalam database
-        $user = User::create([
+        // Menyimpan data utama pengguna ke dalam database menggunakan query builder
+        $user = User::query()->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
@@ -186,8 +186,8 @@ class UserController extends Controller
             $userData['password'] = bcrypt($request->password);
         }
 
-        // Melakukan update data pengguna
-        $user->update($userData);
+        // Melakukan update data pengguna menggunakan query builder
+        User::query()->where('id', $user->id)->update($userData);
         
         // Memperbarui role pengguna
         $user->role_id = $request->role_id;
@@ -203,8 +203,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Menghapus data user
-        $user->delete();
+        // Menghapus data user menggunakan query builder
+        User::query()->where('id', $user->id)->delete();
         
         return redirect()->route('user.index')->with('success', 'User berhasil dihapus.');
     }

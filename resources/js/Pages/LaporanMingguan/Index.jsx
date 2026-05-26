@@ -151,7 +151,7 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                 value={searchVal}
                                 onChange={e => setSearchVal(e.target.value)}
                                 placeholder="Cari Minggu Ke..."
-                                className="w-full bg-slate-900/40 border border-slate-800/60 rounded-2xl py-3 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                                className="w-full bg-white dark:bg-slate-900/40 border border-gray-200 dark:border-slate-800/60 rounded-2xl py-3 pl-11 pr-4 text-sm text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                             />
                         </form>
 
@@ -162,11 +162,11 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                 <select
                                     value={selectedMhsFilter}
                                     onChange={handleMhsFilterChange}
-                                    className="bg-slate-900/40 border border-slate-800/60 rounded-2xl py-3 pl-9 pr-8 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 appearance-none cursor-pointer"
+                                    className="bg-white dark:bg-slate-900/40 border border-gray-200 dark:border-slate-800/60 rounded-2xl py-3 pl-9 pr-8 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 appearance-none cursor-pointer"
                                 >
-                                    <option value="" className="bg-slate-900">Semua Mahasiswa</option>
+                                    <option value="" className="bg-white dark:bg-slate-900">Semua Mahasiswa</option>
                                     {filterMahasiswas.map(m => (
-                                        <option key={m.id} value={m.id} className="bg-slate-900">{m.name}</option>
+                                        <option key={m.id} value={m.id} className="bg-white dark:bg-slate-900">{m.name}</option>
                                     ))}
                                 </select>
                             </div>
@@ -185,11 +185,11 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                 </div>
 
                 {/* Table */}
-                <div className="bg-slate-900/30 border border-slate-800/40 rounded-3xl overflow-hidden shadow-lg animate-fade-in">
+                <div className="bg-white dark:bg-slate-900/30 border border-gray-200 dark:border-slate-800/40 rounded-3xl overflow-hidden shadow-lg animate-fade-in">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-slate-800/50 bg-slate-900/20 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                                <tr className="border-b border-gray-200 dark:border-slate-800/50 bg-gray-50 dark:bg-slate-900/20 text-gray-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
                                     <th className="py-4.5 px-6">Minggu Ke</th>
                                     <th className="py-4.5 px-6">Mahasiswa</th>
                                     <th className="py-4.5 px-6">Dosen</th>
@@ -198,23 +198,23 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                     <th className="py-4.5 px-6 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-800/30 text-sm text-slate-300">
+                            <tbody className="divide-y divide-gray-200 dark:divide-slate-800/30 text-sm text-gray-700 dark:text-slate-300">
                                 {laporanMingguans.data.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" className="py-12 text-center text-slate-500">
+                                        <td colSpan="6" className="py-12 text-center text-gray-500 dark:text-slate-500">
                                             Tidak ada riwayat laporan mingguan.
                                         </td>
                                     </tr>
                                 ) : (
                                     laporanMingguans.data.map((lm) => (
-                                        <tr key={lm.id} className="hover:bg-slate-900/10 transition-colors">
-                                            <td className="py-4 px-6 font-extrabold text-slate-100">
+                                        <tr key={lm.id} className="hover:bg-gray-50 dark:hover:bg-slate-900/10 transition-colors">
+                                            <td className="py-4 px-6 font-extrabold text-gray-900 dark:text-slate-100">
                                                 Minggu ke-{lm.week}
                                             </td>
-                                            <td className="py-4 px-6 font-semibold text-slate-200">
+                                            <td className="py-4 px-6 font-semibold text-gray-900 dark:text-slate-200">
                                                 {lm.mahasiswa?.name || '-'}
                                             </td>
-                                            <td className="py-4 px-6 text-slate-400">
+                                            <td className="py-4 px-6 text-gray-600 dark:text-slate-400">
                                                 {lm.dosen?.name || '-'}
                                             </td>
                                             <td className="py-4 px-6">
@@ -228,7 +228,7 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                                         <ExternalLink className="w-3.5 h-3.5" /> Lihat Dokumen
                                                     </a>
                                                 ) : (
-                                                    <span className="text-slate-350 line-clamp-2 max-w-xs">{lm.isi}</span>
+                                                    <span className="text-gray-600 dark:text-slate-350 line-clamp-2 max-w-xs">{lm.isi}</span>
                                                 )}
                                             </td>
                                             <td className="py-4 px-6">
@@ -237,7 +237,7 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                             <td className="py-4 px-6 text-right space-x-2">
                                                 <button
                                                     onClick={() => handleOpenEdit(lm)}
-                                                    className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-indigo-650 hover:text-indigo-200 text-slate-400 transition-all border border-slate-700/50 cursor-pointer"
+                                                    className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-650 hover:text-indigo-600 dark:hover:text-indigo-200 text-gray-600 dark:text-slate-400 transition-all border border-gray-300 dark:border-slate-700/50 cursor-pointer"
                                                     title={roleName === 'dosen' ? 'Review & Setujui' : 'Detail / Ubah'}
                                                 >
                                                     <Edit className="w-4 h-4" />
@@ -245,7 +245,7 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                                 {(roleName === 'super_admin' || roleName === 'ka_prodi' || (roleName === 'mahasiswa' && lm.mahasiswa_id === currentUser.id)) && (
                                                     <button
                                                         onClick={() => handleDelete(lm.id)}
-                                                        className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-800 hover:bg-rose-950 hover:text-rose-300 text-slate-400 transition-all border border-slate-700/50 cursor-pointer"
+                                                        className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-950 hover:text-rose-600 dark:hover:text-rose-300 text-gray-600 dark:text-slate-400 transition-all border border-gray-300 dark:border-slate-700/50 cursor-pointer"
                                                         title="Hapus"
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -266,14 +266,14 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
             {/* Modal Laporan Mingguan */}
             {modalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                    <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-                        <div className="flex items-center justify-between border-b border-slate-800/60 px-6 py-4.5">
-                            <h3 className="font-bold text-slate-200">
+                    <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800/60 px-6 py-4.5">
+                            <h3 className="font-bold text-gray-900 dark:text-slate-200">
                                 {editMode 
                                     ? (roleName === 'dosen' ? 'Review & Tinjau Laporan Mingguan' : 'Ubah Laporan Mingguan') 
                                     : 'Tambah Laporan Mingguan Baru'}
                             </h3>
-                            <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-slate-100 p-1.5 hover:bg-slate-800 rounded-lg">
+                            <button onClick={() => setModalOpen(false)} className="text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
@@ -282,11 +282,11 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                             {/* Student Selection (Only visible to Admin) */}
                             {roleName !== 'mahasiswa' && roleName !== 'dosen' && (
                                 <div className="space-y-1.5">
-                                    <label className="text-xs text-slate-400 font-semibold uppercase">Mahasiswa</label>
+                                    <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Mahasiswa</label>
                                     <select
                                         value={data.mahasiswa_id}
                                         onChange={e => setData('mahasiswa_id', e.target.value)}
-                                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"
+                                        className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                                     >
                                         <option value="">Pilih Mahasiswa</option>
                                         {mahasiswas.map(m => (
@@ -299,7 +299,7 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-xs text-slate-400 font-semibold uppercase">Minggu Ke</label>
+                                    <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Minggu Ke</label>
                                     <input
                                         type="number"
                                         min="1"
@@ -307,7 +307,7 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                         onChange={e => setData('week', e.target.value)}
                                         disabled={roleName === 'dosen'}
                                         placeholder="Misal: 1, 2, 3"
-                                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
+                                        className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                     />
                                     {errors.week && <p className="text-rose-400 text-xs">{errors.week}</p>}
                                 </div>
@@ -315,11 +315,11 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
                                 {/* Status selection for Dosen / Admin */}
                                 {(roleName === 'dosen' || roleName === 'super_admin' || roleName === 'ka_prodi') && (
                                     <div className="space-y-1.5">
-                                        <label className="text-xs text-slate-400 font-semibold uppercase">Status Persetujuan</label>
+                                        <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Status Persetujuan</label>
                                         <select
                                             value={data.status}
                                             onChange={e => setData('status', e.target.value)}
-                                            className="w-full bg-slate-950/50 border border-slate-850 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"
+                                            className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-850 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                                         >
                                             <option value="pending">Pending</option>
                                             <option value="disetujui">Disetujui</option>
@@ -332,24 +332,24 @@ export default function Index({ laporanMingguans, filterMahasiswas, mahasiswas, 
 
                             {/* Isi / Tautan Laporan */}
                             <div className="space-y-1.5">
-                                <label className="text-xs text-slate-400 font-semibold uppercase">Isi / Tautan Laporan Mingguan</label>
+                                <label className="text-xs text-gray-600 dark:text-slate-400 font-semibold uppercase">Isi / Tautan Laporan Mingguan</label>
                                 <textarea
                                     value={data.isi}
                                     onChange={e => setData('isi', e.target.value)}
                                     disabled={roleName === 'dosen'}
                                     rows="5"
                                     placeholder="Masukkan penjelasan progres mingguan Anda atau tautkan URL dokumen bimbingan di Google Drive..."
-                                    className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 px-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
+                                    className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                 />
                                 {errors.isi && <p className="text-rose-400 text-xs">{errors.isi}</p>}
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="border-t border-slate-800/60 pt-4 flex justify-end gap-3">
+                            <div className="border-t border-gray-200 dark:border-slate-800/60 pt-4 flex justify-end gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setModalOpen(false)}
-                                    className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-4 rounded-xl text-sm transition-all"
+                                    className="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 font-bold py-2.5 px-4 rounded-xl text-sm transition-all"
                                 >
                                     Tutup
                                 </button>

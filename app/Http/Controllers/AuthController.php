@@ -117,8 +117,8 @@ class AuthController extends Controller
             'kategori' => 'Kategori',
         ])->validate();
 
-        // Menyimpan data pengguna baru
-        $user = User::create([
+        // Menyimpan data pengguna baru menggunakan query builder
+        $user = User::query()->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),

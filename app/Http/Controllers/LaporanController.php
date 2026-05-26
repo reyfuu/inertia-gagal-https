@@ -202,8 +202,8 @@ class LaporanController extends Controller
         ])->validate();
 
         if ($roleName === 'dosen') {
-            // Proses update untuk dosen
-            $laporan->update([
+            // Proses update untuk dosen (hanya status dan komentar)
+            Laporan::query()->where('id', $laporan->id)->update([
                 'status' => $request->status,
                 'komentar' => $request->komentar,
             ]);
@@ -213,7 +213,7 @@ class LaporanController extends Controller
                 return back()->with('error', 'Anda tidak memiliki akses untuk mengubah laporan ini.');
             }
             // Mengubah data laporan (status di-reset ke pending)
-            $laporan->update([
+            Laporan::query()->where('id', $laporan->id)->update([
                 'judul' => $request->judul,
                 'type' => $request->type,
                 'dokumen' => $request->dokumen,
@@ -223,7 +223,7 @@ class LaporanController extends Controller
             ]);
         } else {
             // Admin melakukan update penuh
-            $laporan->update([
+            Laporan::query()->where('id', $laporan->id)->update([
                 'mahasiswa_id' => $request->mahasiswa_id,
                 'dosen_id' => $request->dosen_id,
                 'judul' => $request->judul,
@@ -257,8 +257,8 @@ class LaporanController extends Controller
             return back()->with('error', 'Anda tidak memiliki akses untuk menghapus laporan ini.');
         }
 
-        // Menghapus laporan
-        $laporan->delete();
+        // Menghapus laporan menggunakan query builder
+        Laporan::query()->where('id', $laporan->id)->delete();
 
         return redirect()->route('laporan.index')->with('success', 'Laporan akademik berhasil dihapus.');
     }
