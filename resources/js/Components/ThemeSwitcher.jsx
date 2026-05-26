@@ -1,42 +1,55 @@
-
 import { useEffect, useState } from 'react';
+import { Sun, Moon } from 'lucide-react';
 
 const THEME_KEY = 'theme';
 
 export default function ThemeSwitcher() {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(THEME_KEY) || 'light';
-    }
-    return 'light';
-  });
+    // Default: light mode
+    const [theme, setTheme] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem(THEME_KEY) || 'light';
+        }
+        return 'light';
+    });
 
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem(THEME_KEY, theme);
-  }, [theme]);
+    useEffect(() => {
+        const root = document.documentElement;
+        if (theme === 'dark') {
+            root.classList.add('dark');
+        } else {
+            root.classList.remove('dark');
+        }
+        localStorage.setItem(THEME_KEY, theme);
+    }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
+    const toggleTheme = () => {
+        setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    };
 
-  return (
-    <button
-      onClick={toggleTheme}
-      className="flex items-center gap-2 px-3 py-1 rounded border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 transition focus:outline-none focus:ring-2 focus:ring-indigo-400"
-      aria-label="Switch theme"
-      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-    >
-      {theme === 'dark' ? (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" /></svg>
-      ) : (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2" fill="none"/><path stroke="currentColor" strokeWidth="2" d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l-1.41-1.41M6.34 6.34L4.93 4.93m12.02 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>
-      )}
-      <span className="hidden sm:inline">{theme === 'dark' ? 'Dark' : 'Light'}</span>
-    </button>
-  );
+    const isDark = theme === 'dark';
+
+    return (
+        <button
+            onClick={toggleTheme}
+            aria-label={isDark ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}
+            title={isDark ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}
+            className={`
+                relative flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-medium
+                border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400
+                ${isDark
+                    ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white'
+                    : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                }
+            `}
+        >
+            {isDark ? (
+                <Moon className="w-4 h-4 text-indigo-400" />
+            ) : (
+                <Sun className="w-4 h-4 text-amber-500" />
+            )}
+            <span className="hidden sm:inline">
+                {isDark ? 'Dark' : 'Light'}
+            </span>
+        </button>
+    );
 }

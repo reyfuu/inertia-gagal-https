@@ -2,13 +2,23 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig, loadEnv } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-/** Biarkan Vite melayani asset HMR; sisanya diteruskan ke Laravel (php artisan serve). */
+/**
+ * Vite config — pendekatan proxy (praktis).
+ *
+ * Cara penggunaan:
+ *   npm run dev:full  → menyalakan php artisan serve + vite sekaligus
+ *   Buka browser di: http://localhost:5174
+ *
+ * Vite menjadi satu-satunya pintu masuk. Asset dilayani Vite,
+ * route/halaman di-proxy ke Laravel di belakang layar.
+ */
+
+/** Tentukan request mana yang dilayani Vite sendiri (asset/HMR). */
 function shouldServeWithVite(url) {
     const pathname = (url ?? '').split('?')[0];
 
@@ -17,7 +27,6 @@ function shouldServeWithVite(url) {
         pathname.startsWith('/resources/') ||
         pathname.startsWith('/node_modules/') ||
         pathname.startsWith('/build/') ||
-        pathname.startsWith('/_debugbar/') ||
         pathname === '/fonts-manifest.json'
     ) {
         return true;
@@ -31,39 +40,34 @@ export default defineConfig(({ mode }) => {
     const laravelUrl = env.VITE_LARAVEL_URL || 'http://127.0.0.1:8000';
 
     return {
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, 'resources/js'),
-        },
-    },
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.jsx'],
-            refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
-        }),
-        react(),
-        tailwindcss(),
-    ],
-    server: {
-        host: 'localhost',
-        port: 5174, // Changed from 5173 to 5174 to avoid conflict
-        strictPort: true,
-        open: '/',
-        proxy: {
-            '/': {
-                target: laravelUrl,
-                changeOrigin: true,
-                bypass: (req) => (shouldServeWithVite(req.url) ? req.url : undefined),
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'resources/js'),
             },
         },
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
+        plugins: [
+            laravel({
+                input: ['resources/css/app.css', 'resources/js/app.jsx'],
+                refresh: true,
+            }),
+            react(),
+            tailwindcss(),
+        ],
+        server: {
+            host: 'localhost',
+            port: 5174,
+            strictPort: true,
+            open: '/',
+            proxy: {
+                '/': {
+                    target: laravelUrl,
+                    changeOrigin: true,
+                    bypass: (req) => (shouldServeWithVite(req.url) ? req.url : undefined),
+                },
+            },
+            watch: {
+                ignored: ['**/storage/framework/views/**'],
+            },
         },
-    },
     };
 });

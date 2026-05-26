@@ -137,20 +137,20 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
         const s = status?.toLowerCase() || '';
         if (s === 'disetujui') {
             return (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">
                     <CheckCircle className="w-3.5 h-3.5" /> Disetujui
                 </span>
             );
         }
         if (s === 'ditolak') {
             return (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20">
                     <XCircle className="w-3.5 h-3.5" /> Ditolak
                 </span>
             );
         }
         return (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20">
                 <HelpCircle className="w-3.5 h-3.5" /> Review
             </span>
         );
@@ -232,7 +232,7 @@ export default function Index({ bimbingans, mahasiswas, dosens, filters }) {
                                                 {b.type}
                                             </td>
                                             <td className="py-4 px-6">
-                                                <span className="px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold">
+                                                <span className="px-2 py-0.5 rounded bg-indigo-100 border border-indigo-200 text-indigo-700 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400 text-xs font-bold">
                                                     #{b.revision_count}
                                                 </span>
                                             </td>

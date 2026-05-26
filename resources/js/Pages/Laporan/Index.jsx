@@ -105,20 +105,20 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
         const s = status?.toLowerCase() || '';
         if (s === 'disetujui') {
             return (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">
                     <CheckCircle className="w-3.5 h-3.5" /> Disetujui
                 </span>
             );
         }
         if (s === 'revisi') {
             return (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20">
                     <AlertCircle className="w-3.5 h-3.5" /> Revisi
                 </span>
             );
         }
         return (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20">
                 <Clock className="w-3.5 h-3.5" /> Pending
             </span>
         );
@@ -198,7 +198,7 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
                                                     href={l.dokumen} 
                                                     target="_blank" 
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-600/20 transition-all cursor-pointer"
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-100 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20 hover:bg-indigo-200 dark:hover:bg-indigo-600/20 transition-all cursor-pointer"
                                                 >
                                                     <ExternalLink className="w-3.5 h-3.5" /> Link File
                                                 </a>
