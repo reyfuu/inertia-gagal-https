@@ -60,9 +60,13 @@ class BimbinganController extends Controller
             $mahasiswas = User::query()->whereHas('roles', function($q) {
                 $q->where('name', 'mahasiswa');
             })->get();
-            $dosens = User::query()->whereNotNull('nidn')->orWhereHas('roles', function($q) {
-                $q->whereIn('name', ['dosen', 'ka_prodi']);
-            })->get();
+            $dosens = User::query()->where('nidn', '!=', '')
+                ->orWhereHas('roles', function($q) {
+                    $q->where(function($sq) {
+                        $sq->where('name', 'dosen')
+                           ->orWhere('name', 'ka_prodi');
+                    });
+                })->get();
         }
 
         // Merender view halaman Bimbingan menggunakan Inertia
@@ -131,14 +135,14 @@ class BimbinganController extends Controller
             $bimbinganData['dosen_id'] = $user->dosen_pembimbing_id;
             $bimbinganData['status'] = 'Review';
             // Menghitung jumlah revisi/pertemuan bimbingan mahasiswa tersebut
-            $bimbinganData['revision_count'] = Bimbingan::query()->where('user_id', $user->id)->count() + 1;
+            $bimbinganData['revision_count'] = Bimbingan::query()->select('id')->where('user_id', $user->id)->get()->count() + 1;
         } else {
             // Admin/Kaprodi mengisi manual mahasiswa dan dosen tujuan
             $bimbinganData['user_id'] = $request->user_id;
             $bimbinganData['dosen_id'] = $request->dosen_id;
             $bimbinganData['status'] = $request->status ?? 'Review';
             $bimbinganData['komentar'] = $request->komentar;
-            $bimbinganData['revision_count'] = Bimbingan::query()->where('user_id', $request->user_id)->count() + 1;
+            $bimbinganData['revision_count'] = Bimbingan::query()->select('id')->where('user_id', $request->user_id)->get()->count() + 1;
         }
 
         // Membuat bimbingan baru menggunakan query builder
@@ -264,7 +268,6 @@ class BimbinganController extends Controller
         $comments = Bimbingan::query()
             ->with('dosen:id,name')
             ->where('user_id', $bimbingan->user_id)
-            ->whereNotNull('komentar')
             ->where('komentar', '!=', '')
             ->orderByDesc('tanggal')
             ->orderByDesc('id')

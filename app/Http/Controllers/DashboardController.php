@@ -46,12 +46,12 @@ class DashboardController extends Controller
         // Logika statistik dan data berdasarkan peran (role)
         if ($roleName === 'super_admin' || $roleName === 'ka_prodi') {
             // Admin dan Kaprodi memiliki hak akses untuk melihat keseluruhan data statistik
-            $stats['total_users'] = User::query()->count();
-            $stats['total_mahasiswa'] = User::query()->whereHas('roles', function($q) { $q->where('name', 'mahasiswa'); })->count();
-            $stats['total_dosen'] = User::query()->whereHas('roles', function($q) { $q->where('name', 'dosen'); })->count();
-            $stats['total_bimbingan'] = Bimbingan::query()->count();
-            $stats['total_laporan'] = Laporan::query()->count();
-            $stats['total_laporan_mingguan'] = LaporanMingguan::query()->count();
+            $stats['total_users'] = User::query()->select('id')->get()->count();
+            $stats['total_mahasiswa'] = User::query()->select('id')->whereHas('roles', function($q) { $q->where('name', 'mahasiswa'); })->get()->count();
+            $stats['total_dosen'] = User::query()->select('id')->whereHas('roles', function($q) { $q->where('name', 'dosen'); })->get()->count();
+            $stats['total_bimbingan'] = Bimbingan::query()->select('id')->get()->count();
+            $stats['total_laporan'] = Laporan::query()->select('id')->get()->count();
+            $stats['total_laporan_mingguan'] = LaporanMingguan::query()->select('id')->get()->count();
 
             // Mengambil 5 aktivitas bimbingan dan laporan terbaru secara global
             $recentBimbingan = Bimbingan::query()->with(['user', 'dosen'])->latest()->limit(5)->get();
@@ -61,9 +61,9 @@ class DashboardController extends Controller
             $studentIds = User::query()->where('dosen_pembimbing_id', $user->id)->pluck('id')->toArray();
             
             $stats['total_mahasiswa'] = count($studentIds);
-            $stats['total_bimbingan'] = Bimbingan::query()->where('dosen_id', $user->id)->count();
-            $stats['total_laporan'] = Laporan::query()->where('dosen_id', $user->id)->count();
-            $stats['total_laporan_mingguan'] = LaporanMingguan::query()->where('dosen_id', $user->id)->count();
+            $stats['total_bimbingan'] = Bimbingan::query()->select('id')->where('dosen_id', $user->id)->get()->count();
+            $stats['total_laporan'] = Laporan::query()->select('id')->where('dosen_id', $user->id)->get()->count();
+            $stats['total_laporan_mingguan'] = LaporanMingguan::query()->select('id')->where('dosen_id', $user->id)->get()->count();
 
             // Mengambil 5 aktivitas bimbingan dan laporan terbaru milik dosen yang bersangkutan
             $recentBimbingan = Bimbingan::query()->with(['user', 'dosen'])
@@ -79,9 +79,9 @@ class DashboardController extends Controller
                 ->get();
         } else {
             // Mahasiswa hanya dapat melihat data statistik pribadinya sendiri
-            $stats['total_bimbingan'] = Bimbingan::query()->where('user_id', $user->id)->count();
-            $stats['total_laporan'] = Laporan::query()->where('mahasiswa_id', $user->id)->count();
-            $stats['total_laporan_mingguan'] = LaporanMingguan::query()->where('mahasiswa_id', $user->id)->count();
+            $stats['total_bimbingan'] = Bimbingan::query()->select('id')->where('user_id', $user->id)->get()->count();
+            $stats['total_laporan'] = Laporan::query()->select('id')->where('mahasiswa_id', $user->id)->get()->count();
+            $stats['total_laporan_mingguan'] = LaporanMingguan::query()->select('id')->where('mahasiswa_id', $user->id)->get()->count();
 
             // Mengambil 5 aktivitas bimbingan dan laporan terbaru milik mahasiswa yang bersangkutan
             $recentBimbingan = Bimbingan::query()->with(['user', 'dosen'])

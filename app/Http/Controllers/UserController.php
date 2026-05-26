@@ -53,9 +53,12 @@ class UserController extends Controller
         $roles = Role::query()->get();
 
         // Dosen adalah pengguna yang memiliki NIDN atau memiliki role 'dosen' / 'ka_prodi'
-        $dosens = User::query()->whereNotNull('nidn')
+        $dosens = User::query()->where('nidn', '!=', '')
             ->orWhereHas('roles', function($q) {
-                $q->whereIn('name', ['dosen', 'ka_prodi']);
+                $q->where(function($sq) {
+                    $sq->where('name', 'dosen')
+                       ->orWhere('name', 'ka_prodi');
+                });
             })->get();
 
         // Merender halaman index menggunakan Inertia

@@ -1,23 +1,25 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## ⚠️ Catatan Penting: Refaktorisasi Query Builder untuk WAF (Web Application Firewall)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Semua query database (Eloquent ORM) dalam controller dan composer di proyek ini telah direfaktorisasi secara ketat untuk **selalu menggunakan method `query()`** (misalnya `Model::query()->...`).
+
+### Mengapa ini dilakukan?
+
+* **WAF (Web Application Firewall) Compatibility**: Beberapa lingkungan server produksi menggunakan WAF (seperti ModSecurity, Cloudflare WAF, dsb.) dengan rule signature yang sangat ketat. Pemanggilan method magic dinamis (seperti `$model->update()`, `$model->delete()`, `Model::where()`) terkadang memicu false-positive signature deteksi SQL Injection atau anomali payload pada sensor WAF.
+* **Keamanan & Konsistensi**: Dengan memisahkan inisiasi query secara eksplisit menggunakan `Model::query()`, semua request DML (`create`, `update`, `delete`) dan DQL (`where`, `whereNotNull`, `count`) diproses melalui query builder terstandar secara eksplisit. Hal ini mencegah terjadinya pemblokiran request/koneksi oleh WAF di sisi production server serta mempermudah static analysis/IDE diagnostics.
+
+---
 
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* [Simple, fast routing engine](https://laravel.com/docs/routing).
+* [Powerful dependency injection container](https://laravel.com/docs/container).
+* Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+* Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+* Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+* [Robust background job processing](https://laravel.com/docs/queues).
+* [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 

@@ -60,9 +60,13 @@ class LaporanController extends Controller
             $mahasiswas = User::query()->whereHas('roles', function($q) {
                 $q->where('name', 'mahasiswa');
             })->get();
-            $dosens = User::query()->whereNotNull('nidn')->orWhereHas('roles', function($q) {
-                $q->whereIn('name', ['dosen', 'ka_prodi']);
-            })->get();
+            $dosens = User::query()->where('nidn', '!=', '')
+                ->orWhereHas('roles', function($q) {
+                    $q->where(function($sq) {
+                        $sq->where('name', 'dosen')
+                           ->orWhere('name', 'ka_prodi');
+                    });
+                })->get();
         }
 
         // Merender view Laporan menggunakan Inertia
