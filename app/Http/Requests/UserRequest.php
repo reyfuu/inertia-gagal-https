@@ -3,14 +3,31 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * Request validator untuk data User.
+ * Mengatur hak akses dan aturan validasi pembuatan/pembaruan data pengguna.
+ */
 class UserRequest extends FormRequest
 {
+    /**
+     * Menentukan apakah pengguna diizinkan untuk membuat request ini.
+     * Menggunakan Auth::check() untuk memverifikasi pengguna yang terautentikasi.
+     *
+     * @return bool
+     */
     public function authorize()
     {
-        return auth()->check();
+        // Pengguna harus login terlebih dahulu
+        return Auth::check();
     }
 
+    /**
+     * Mendapatkan aturan validasi yang berlaku untuk request ini.
+     *
+     * @return array
+     */
     public function rules()
     {
         // Ambil ID dari route parameter (standar Backpack)
@@ -29,6 +46,11 @@ class UserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mendapatkan pesan kesalahan kustom untuk aturan validasi yang dilanggar.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [
@@ -40,6 +62,11 @@ class UserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mendapatkan nama atribut yang ramah pengguna untuk kesalahan validasi.
+     *
+     * @return array
+     */
     public function attributes()
     {
         return [

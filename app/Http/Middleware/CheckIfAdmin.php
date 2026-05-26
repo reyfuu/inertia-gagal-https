@@ -3,36 +3,36 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * Middleware untuk memverifikasi apakah pengguna terautentikasi adalah Admin/Kaprodi.
+ * Menghalangi akses non-admin dari rute administratif.
+ */
 class CheckIfAdmin
 {
     /**
-     * Checked that the logged in user is an administrator.
-     *
-     * --------------
-     * VERY IMPORTANT
-     * --------------
-     * If you have both regular users and admins inside the same table, change
-     * the contents of this method to check that the logged in user
-     * is an admin, and not a regular user.
-     *
-     * Additionally, in Laravel 7+, you should change app/Providers/RouteServiceProvider::HOME
-     * which defines the route where a logged in user (but not admin) gets redirected
-     * when trying to access an admin route. By default it's '/home' but Backpack
-     * does not have a '/home' route, use something you've built for your users
-     * (again - users, not admins).
+     * Memeriksa apakah pengguna memiliki salah satu role administratif.
      *
      * @param  ?\Illuminate\Contracts\Auth\Authenticatable  $user
      * @return bool
      */
     private function checkIfUserIsAdmin($user)
     {
-        // return ($user->is_admin == 1);
-        return true;
+        // Jika tidak ada data user, tolak
+        if (!$user) {
+            return false;
+        }
+        // Mendapatkan nama role pertama dari relasi roles
+        $roleName = $user->roles->first()?->name;
+        // Izinkan jika memiliki role super_admin atau ka_prodi
+        return in_array($roleName, ['super_admin', 'ka_prodi']);
     }
 
     /**
-     * Answer to unauthorized access request.
+     * Merespon request yang tidak terotorisasi.
+     * Mengembalikan pesan JSON/Plain Text jika request berupa AJAX,
+     * atau mengalihkan ke halaman login jika request biasa.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
@@ -40,14 +40,15 @@ class CheckIfAdmin
     private function respondToUnauthorizedRequest($request)
     {
         if ($request->ajax() || $request->wantsJson()) {
-            return response(trans('backpack::base.unauthorized'), 401);
+            return response('Unauthorized.', 401);
         } else {
-            return redirect()->guest(backpack_url('login'));
+            return redirect()->guest(route('login'));
         }
     }
 
     /**
-     * Handle an incoming request.
+     * Menangani request masuk.
+     * Memastikan pengguna sudah login dan merupakan administrator.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -55,14 +56,17 @@ class CheckIfAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (backpack_auth()->guest()) {
+        // Jika belum terautentikasi (guest), tangani sebagai unauthorized request
+        if (Auth::guest()) {
             return $this->respondToUnauthorizedRequest($request);
         }
 
-        if (! $this->checkIfUserIsAdmin(backpack_user())) {
+        // Jika bukan admin/kaprodi, tangani sebagai unauthorized request
+        if (! $this->checkIfUserIsAdmin(Auth::user())) {
             return $this->respondToUnauthorizedRequest($request);
         }
 
+        // Lanjutkan request ke tahapan berikutnya jika lolos verifikasi
         return $next($request);
     }
 }

@@ -3,22 +3,28 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * Request validator untuk data Product.
+ * Mengatur hak akses dan aturan validasi pembuatan/pembaruan produk.
+ */
 class ProductRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Menentukan apakah pengguna diizinkan untuk membuat request ini.
+     * Menggunakan Auth::check() untuk memverifikasi pengguna yang terautentikasi.
      *
      * @return bool
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return backpack_auth()->check();
+        // Hanya izinkan jika pengguna sudah masuk (terautentikasi)
+        return Auth::check();
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Mendapatkan aturan validasi yang berlaku untuk request ini.
      *
      * @return array
      */
@@ -30,7 +36,7 @@ class ProductRequest extends FormRequest
     }
 
     /**
-     * Get the validation attributes that apply to the request.
+     * Mendapatkan nama atribut yang ramah pengguna untuk kesalahan validasi.
      *
      * @return array
      */
@@ -42,7 +48,7 @@ class ProductRequest extends FormRequest
     }
 
     /**
-     * Get the validation messages that apply to the request.
+     * Mendapatkan pesan kesalahan kustom untuk aturan validasi yang dilanggar.
      *
      * @return array
      */
