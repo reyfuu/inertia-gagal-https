@@ -1,60 +1,98 @@
-## ⚠️ Catatan Penting: Refaktorisasi Query Builder untuk WAF (Web Application Firewall)
+# TAMP APP — Inertia Edition
 
-Semua query database (Eloquent ORM) dalam controller dan composer di proyek ini telah direfaktorisasi secara ketat untuk **selalu menggunakan method `query()`** (misalnya `Model::query()->...`).
-
-### Mengapa ini dilakukan?
-
-* **WAF (Web Application Firewall) Compatibility**: Beberapa lingkungan server produksi menggunakan WAF (seperti ModSecurity, Cloudflare WAF, dsb.) dengan rule signature yang sangat ketat. Pemanggilan method magic dinamis (seperti `$model->update()`, `$model->delete()`, `Model::where()`) terkadang memicu false-positive signature deteksi SQL Injection atau anomali payload pada sensor WAF.
-* **Keamanan & Konsistensi**: Dengan memisahkan inisiasi query secara eksplisit menggunakan `Model::query()`, semua request DML (`create`, `update`, `delete`) dan DQL (`where`, `whereNotNull`, `count`) diproses melalui query builder terstandar secara eksplisit. Hal ini mencegah terjadinya pemblokiran request/koneksi oleh WAF di sisi production server serta mempermudah static analysis/IDE diagnostics.
+Aplikasi manajemen bimbingan akademik mahasiswa berbasis **Laravel + Inertia.js + React**.
 
 ---
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Layer      | Teknologi                          |
+|------------|------------------------------------|
+| Backend    | Laravel 13, PHP 8.3                |
+| Frontend   | React 19, Inertia.js 2             |
+| Styling    | Tailwind CSS 4, Lucide React       |
+| Build Tool | Vite 8                             |
+| Database   | SQLite / MySQL                     |
 
-* [Simple, fast routing engine](https://laravel.com/docs/routing).
-* [Powerful dependency injection container](https://laravel.com/docs/container).
-* Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-* Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-* Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-* [Robust background job processing](https://laravel.com/docs/queues).
-* [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Menjalankan Project
 
 ```bash
-composer require laravel/boost --dev
+# Install semua dependency
+composer install
+npm install
 
-php artisan boost:install
+# Setup env
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+
+# Development (jalankan semua sekaligus)
+npm run dev:full
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Buka browser di: **http://localhost:5174**
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## NPM Packages
 
-## Code of Conduct
+### Dependencies
+| Package | Versi | Keterangan |
+|---------|-------|------------|
+| `@inertiajs/react` | ^3.2.0 | Adapter Inertia untuk React |
+| `@vitejs/plugin-react` | ^6.0.2 | Plugin React untuk Vite |
+| `lucide-react` | ^1.16.0 | Icon library |
+| `react` | ^19.2.6 | UI library |
+| `react-dom` | ^19.2.6 | React DOM renderer |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Dev Dependencies
+| Package | Versi | Keterangan |
+|---------|-------|------------|
+| `@tailwindcss/vite` | ^4.0.0 | Plugin Tailwind CSS untuk Vite |
+| `concurrently` | ^9.0.1 | Jalankan beberapa perintah sekaligus |
+| `laravel-vite-plugin` | ^3.1 | Plugin Vite untuk Laravel |
+| `tailwindcss` | ^4.0.0 | Utility-first CSS framework |
+| `vite` | ^8.0.0 | Build tool & dev server |
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Composer Packages
+
+### Require (Production)
+| Package | Versi | Keterangan |
+|---------|-------|------------|
+| `php` | ^8.3 | PHP runtime |
+| `inertiajs/inertia-laravel` | ^2.0 | Adapter Inertia untuk Laravel |
+| `laravel/framework` | ^13.7 | Laravel framework |
+| `laravel/tinker` | ^3.0 | REPL interaktif untuk Laravel |
+| `tightenco/ziggy` | ^2.6 | Named routes Laravel di JavaScript |
+
+### Require-dev (Development)
+| Package | Versi | Keterangan |
+|---------|-------|------------|
+| `barryvdh/laravel-debugbar` | ^4.2 | Debug toolbar untuk development |
+| `barryvdh/laravel-ide-helper` | ^3.7 | Helper IDE (autocomplete, type hints) |
+| `fakerphp/faker` | ^1.23 | Generator data palsu untuk seeder |
+| `laravel/pail` | ^1.2.5 | Log viewer real-time |
+| `laravel/pint` | ^1.27 | PHP code style fixer |
+| `mockery/mockery` | ^1.6 | Mocking library untuk testing |
+| `nunomaduro/collision` | ^8.6 | Error reporting yang lebih informatif |
+| `phpunit/phpunit` | ^12.5.12 | Framework testing PHP |
+
+---
+
+## Catatan Teknis
+
+### WAF Compatibility
+Semua query database menggunakan `Model::query()->...` secara eksplisit untuk menghindari false-positive pada WAF (Web Application Firewall) seperti ModSecurity atau Cloudflare WAF di environment production.
+
+### Dark / Light Mode
+Theme toggle tersedia di header. Preferensi disimpan di `localStorage`. Default: **light mode**.
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
