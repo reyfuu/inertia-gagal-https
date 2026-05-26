@@ -1,5 +1,16 @@
 import '../css/app.css';
 
+// [SKILL] Apply initial theme before React mounts to avoid flash of incorrect theme
+if (typeof document !== 'undefined') {
+    try {
+        const theme = localStorage.getItem('theme') || 'light';
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+    } catch (e) {
+        // ignore
+    }
+}
+
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
