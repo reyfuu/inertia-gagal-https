@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
-import { Mail, Lock, LogIn, ArrowRight } from 'lucide-react';
+import { Mail, Lock, LogIn, ArrowRight, ShieldCheck } from 'lucide-react';
 
 // [SKILL] Login Page — responsive light/dark mode
 export default function Login() {
@@ -28,7 +28,7 @@ export default function Login() {
                 {/* Brand Logo */}
                 <div className="flex flex-col items-center mb-8">
                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-indigo-500/20 mb-3">
-                        T
+                        <ShieldCheck className="w-7 h-7 text-white" />
                     </div>
                     {/* [SKILL] Title — dark text in light, light text in dark */}
                     <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
@@ -44,13 +44,13 @@ export default function Login() {
                         <div className="space-y-2">
                             <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Email</label>
                             <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500" />
+                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500" />
                                 <input
                                     type="email"
                                     value={data.email}
                                     onChange={e => setData('email', e.target.value)}
                                     placeholder="nama@email.com"
-                                    className={`input-base pl-12 ${errors.email ? 'border-rose-400 focus:border-rose-400' : ''}`}
+                                    className={`input-base ${errors.email ? 'border-rose-400 focus:border-rose-400' : ''}`}
                                 />
                             </div>
                             {errors.email && <p className="text-rose-500 dark:text-rose-400 text-xs mt-1 font-medium">{errors.email}</p>}
@@ -66,7 +66,7 @@ export default function Login() {
                                     value={data.password}
                                     onChange={e => setData('password', e.target.value)}
                                     placeholder="••••••••"
-                                    className={`input-base pl-12 ${errors.password ? 'border-rose-400 focus:border-rose-400' : ''}`}
+                                    className={`input-base pl-1s2 ${errors.password ? 'border-rose-400 focus:border-rose-400' : ''}`}
                                 />
                             </div>
                             {errors.password && <p className="text-rose-500 dark:text-rose-400 text-xs mt-1 font-medium">{errors.password}</p>}

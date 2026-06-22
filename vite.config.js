@@ -40,6 +40,10 @@ export default defineConfig(({ mode }) => {
     const laravelUrl = env.VITE_LARAVEL_URL || 'http://127.0.0.1:8000';
 
     return {
+        scripts: {
+            dev: "vite",
+            serve: "concurrently \"php artisan serve\" \"vite\""
+        },
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, 'resources/js'),
