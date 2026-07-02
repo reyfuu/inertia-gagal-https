@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import {
     Users,
@@ -14,6 +14,10 @@ import {
 
 // [SKILL] Dashboard — light-mode-first stat cards & tables
 export default function Dashboard({ stats, recentBimbingan, recentLaporan }) {
+    const { auth } = usePage().props;
+    const currentUser = auth.user;
+    const roleName = currentUser.role;
+    const kategori = currentUser.kategori;
     const today = new Date().toLocaleDateString('id-ID', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
@@ -74,6 +78,7 @@ export default function Dashboard({ stats, recentBimbingan, recentLaporan }) {
                         </div>
                     )}
 
+                    {(roleName !== 'mahasiswa' || kategori === 'skripsi') && (
                     <div className="bg-white dark:bg-slate-900/40
                                     border border-slate-200 dark:border-slate-800/60
                                     rounded-2xl p-5 flex items-center justify-between
@@ -89,6 +94,7 @@ export default function Dashboard({ stats, recentBimbingan, recentLaporan }) {
                             <Calendar className="w-6 h-6 text-emerald-500 dark:text-emerald-400" />
                         </div>
                     </div>
+                    )}
 
                     <div className="bg-white dark:bg-slate-900/40
                                     border border-slate-200 dark:border-slate-800/60
@@ -106,6 +112,7 @@ export default function Dashboard({ stats, recentBimbingan, recentLaporan }) {
                         </div>
                     </div>
 
+                    {(roleName !== 'mahasiswa' || kategori === 'magang') && (
                     <div className="bg-white dark:bg-slate-900/40
                                     border border-slate-200 dark:border-slate-800/60
                                     rounded-2xl p-5 flex items-center justify-between
@@ -121,12 +128,14 @@ export default function Dashboard({ stats, recentBimbingan, recentLaporan }) {
                             <BookOpen className="w-6 h-6 text-purple-500 dark:text-purple-400" />
                         </div>
                     </div>
+                    )}
                 </div>
 
                 {/* ── Recent Activity Tables ───────────────── */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Recent Bimbingan */}
+                    {/* Recent Bimbingan — hanya untuk skripsi atau bukan mahasiswa */}
                     {/* [SKILL] Activity cards — white in light, glass in dark */}
+                    {(roleName !== 'mahasiswa' || kategori === 'skripsi') && (
                     <div className="bg-white dark:bg-slate-900/30
                                     border border-slate-200 dark:border-slate-800/40
                                     rounded-3xl p-6 shadow-sm dark:backdrop-blur-md dark:shadow-lg
@@ -170,8 +179,10 @@ export default function Dashboard({ stats, recentBimbingan, recentLaporan }) {
                             )}
                         </div>
                     </div>
+                    )}
 
                     {/* Recent Laporan */}
+                    {(roleName !== 'mahasiswa' || kategori === 'magang') && (
                     <div className="bg-white dark:bg-slate-900/30
                                     border border-slate-200 dark:border-slate-800/40
                                     rounded-3xl p-6 shadow-sm dark:backdrop-blur-md dark:shadow-lg
@@ -215,6 +226,7 @@ export default function Dashboard({ stats, recentBimbingan, recentLaporan }) {
                             )}
                         </div>
                     </div>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>

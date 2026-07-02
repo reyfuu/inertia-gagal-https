@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LaporanMingguan;
 use App\Models\Laporan;
+use App\Models\LaporanMingguan;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Inertia\Response;
 
 /**
  * Controller untuk mengelola Laporan Mingguan.
@@ -19,15 +21,19 @@ class LaporanMingguanController extends Controller
     /**
      * Menampilkan daftar laporan mingguan sesuai filter pencarian, filter dropdown mahasiswa, dan peran pengguna.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Inertia\Response
+     * @return Response
      */
     public function index(Request $request)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa skripsi tidak boleh mengakses halaman laporan mingguan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'magang') {
+            return redirect('/dashboard')->with('error', 'Halaman Laporan Mingguan hanya tersedia untuk mahasiswa Magang.');
+        }
 
         $search = $request->input('search');
         $filterMahasiswa = $request->input('mahasiswa_id');
@@ -37,7 +43,7 @@ class LaporanMingguanController extends Controller
 
         // Filter pencarian berdasarkan nama mahasiswa atau nomor minggu
         if ($search) {
-            $query->whereHas('mahasiswa', function($q) use ($search) {
+            $query->whereHas('mahasiswa', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
             })->orWhere('week', 'like', "%{$search}%");
         }
@@ -60,18 +66,19 @@ class LaporanMingguanController extends Controller
         $laporanMingguans = $query->latest()->paginate(10)->withQueryString();
 
         // Mendapatkan opsi daftar mahasiswa bimbingan yang memiliki laporan mingguan untuk dropdown filter
-        $filterMahasiswas = User::query()->whereHas('laporanMingguans', function($q) use ($roleName, $user) {
+        $filterMahasiswas = User::query()->whereHas('laporanMingguans', function ($q) use ($roleName, $user) {
             if ($roleName === 'dosen') {
                 $q->where('dosen_id', $user->id);
             }
         })->get();
 
         // Menampilkan opsi semua mahasiswa jika diakses oleh Admin/Kaprodi untuk formulir pembuatan
+        // Filter mahasiswas: hanya mahasiswa dengan kategori magang yang dapat memiliki laporan mingguan
         $mahasiswas = [];
         if (in_array($roleName, ['super_admin', 'ka_prodi'])) {
-            $mahasiswas = User::query()->whereHas('roles', function($q) {
+            $mahasiswas = User::query()->whereHas('roles', function ($q) {
                 $q->where('name', 'mahasiswa');
-            })->get();
+            })->where('kategori', 'magang')->get();
         }
 
         // Merender view Laporan Mingguan menggunakan Inertia
@@ -86,15 +93,19 @@ class LaporanMingguanController extends Controller
     /**
      * Menyimpan data laporan mingguan baru ke database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function store(Request $request)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa skripsi tidak boleh membuat laporan mingguan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'magang') {
+            return back()->with('error', 'Fitur Laporan Mingguan hanya tersedia untuk mahasiswa Magang.');
+        }
 
         // Aturan validasi dasar
         $rules = [
@@ -129,7 +140,7 @@ class LaporanMingguanController extends Controller
         if ($roleName === 'mahasiswa') {
             // Mahasiswa wajib memiliki Laporan Akademik terlebih dahulu
             $laporan = Laporan::query()->where('mahasiswa_id', $user->id)->latest()->first();
-            if (!$laporan) {
+            if (! $laporan) {
                 return back()->with('error', 'Anda harus memiliki Laporan Akademik terlebih dahulu sebelum menambahkan Laporan Mingguan.');
             }
             $data['mahasiswa_id'] = $user->id;
@@ -141,7 +152,7 @@ class LaporanMingguanController extends Controller
             $student = User::query()->find($request->mahasiswa_id);
             // Mahasiswa yang dipilih wajib memiliki Laporan Akademik
             $laporan = Laporan::query()->where('mahasiswa_id', $request->mahasiswa_id)->latest()->first();
-            if (!$laporan) {
+            if (! $laporan) {
                 return back()->with('error', 'Mahasiswa yang dipilih tidak memiliki Laporan Akademik.');
             }
             $data['mahasiswa_id'] = $request->mahasiswa_id;
@@ -159,16 +170,19 @@ class LaporanMingguanController extends Controller
     /**
      * Memperbarui data laporan mingguan di database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\LaporanMingguan  $laporanMingguan
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request, LaporanMingguan $laporanMingguan)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa skripsi tidak boleh mengubah laporan mingguan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'magang') {
+            return back()->with('error', 'Fitur Laporan Mingguan hanya tersedia untuk mahasiswa Magang.');
+        }
 
         $rules = [
             'week' => 'required|integer|min:1',
@@ -218,7 +232,7 @@ class LaporanMingguanController extends Controller
             // Admin melakukan update penuh
             $student = User::query()->find($request->mahasiswa_id);
             $laporan = Laporan::query()->where('mahasiswa_id', $request->mahasiswa_id)->latest()->first();
-            if (!$laporan) {
+            if (! $laporan) {
                 return back()->with('error', 'Mahasiswa yang dipilih tidak memiliki Laporan Akademik.');
             }
             LaporanMingguan::query()->where('id', $laporanMingguan->id)->update([
@@ -237,15 +251,19 @@ class LaporanMingguanController extends Controller
     /**
      * Menghapus data laporan mingguan dari database.
      *
-     * @param  \App\Models\LaporanMingguan  $laporanMingguan
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function destroy(LaporanMingguan $laporanMingguan)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa skripsi tidak boleh menghapus laporan mingguan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'magang') {
+            return back()->with('error', 'Fitur Laporan Mingguan hanya tersedia untuk mahasiswa Magang.');
+        }
 
         // Mahasiswa dilarang menghapus laporan mingguan milik orang lain
         if ($roleName === 'mahasiswa' && $laporanMingguan->mahasiswa_id !== $user->id) {

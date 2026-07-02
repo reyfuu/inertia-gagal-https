@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Laporan;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Inertia\Response;
 
 /**
  * Controller untuk mengelola Laporan Akademik (Proposal/Magang/Skripsi).
@@ -18,13 +20,12 @@ class LaporanController extends Controller
     /**
      * Menampilkan daftar laporan akademik sesuai filter pencarian dan peran pengguna.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Inertia\Response
+     * @return Response
      */
     public function index(Request $request)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
 
@@ -32,11 +33,11 @@ class LaporanController extends Controller
 
         // Query utama data laporan akademik beserta relasi mahasiswa (user) dan dosen menggunakan query builder
         $query = Laporan::query()->with(['mahasiswa', 'dosen'])
-            ->when($search, function($q, $search) {
+            ->when($search, function ($q, $search) {
                 $q->where('judul', 'like', "%{$search}%")
-                  ->orWhereHas('mahasiswa', function($qm) use ($search) {
-                      $qm->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('mahasiswa', function ($qm) use ($search) {
+                        $qm->where('name', 'like', "%{$search}%");
+                    });
             });
 
         // Membatasi data laporan berdasarkan peran (role) pengguna
@@ -57,14 +58,14 @@ class LaporanController extends Controller
 
         // Hanya Admin/Kaprodi yang membutuhkan daftar dropdown lengkap mahasiswa & dosen
         if (in_array($roleName, ['super_admin', 'ka_prodi'])) {
-            $mahasiswas = User::query()->whereHas('roles', function($q) {
+            $mahasiswas = User::query()->whereHas('roles', function ($q) {
                 $q->where('name', 'mahasiswa');
             })->get();
             $dosens = User::query()->where('nidn', '!=', '')
-                ->orWhereHas('roles', function($q) {
-                    $q->where(function($sq) {
+                ->orWhereHas('roles', function ($q) {
+                    $q->where(function ($sq) {
                         $sq->where('name', 'dosen')
-                           ->orWhere('name', 'ka_prodi');
+                            ->orWhere('name', 'ka_prodi');
                     });
                 })->get();
         }
@@ -81,20 +82,24 @@ class LaporanController extends Controller
     /**
      * Menyimpan data laporan akademik baru ke database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function store(Request $request)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
 
         // Aturan validasi dasar
+        // Batasi tipe laporan berdasarkan kategori mahasiswa
+        $allowedTypes = 'proposal,magang,skripsi'; // default untuk admin/dosen
+        if ($roleName === 'mahasiswa') {
+            $allowedTypes = $user->kategori === 'magang' ? 'magang' : 'proposal,skripsi';
+        }
         $rules = [
             'judul' => 'required|string|min:10|max:255',
-            'type' => 'required|in:proposal,magang,skripsi',
+            'type' => 'required|in:'.$allowedTypes,
             'dokumen' => 'required|url',
             'tanggal_mulai' => 'required|date',
             'deskripsi' => 'nullable|string',
@@ -155,20 +160,23 @@ class LaporanController extends Controller
     /**
      * Memperbarui data laporan akademik di database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Laporan  $laporan
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request, Laporan $laporan)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
 
+        // Batasi tipe laporan berdasarkan kategori mahasiswa
+        $allowedTypes = 'proposal,magang,skripsi'; // default untuk admin/dosen
+        if ($roleName === 'mahasiswa') {
+            $allowedTypes = $user->kategori === 'magang' ? 'magang' : 'proposal,skripsi';
+        }
         $rules = [
             'judul' => 'required|string|min:10|max:255',
-            'type' => 'required|in:proposal,magang,skripsi',
+            'type' => 'required|in:'.$allowedTypes,
             'dokumen' => 'required|url',
             'tanggal_mulai' => 'required|date',
             'deskripsi' => 'nullable|string',
@@ -246,13 +254,12 @@ class LaporanController extends Controller
     /**
      * Menghapus data laporan akademik dari database.
      *
-     * @param  \App\Models\Laporan  $laporan
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function destroy(Laporan $laporan)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
 

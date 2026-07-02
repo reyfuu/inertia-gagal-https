@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Bimbingan;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
+use Inertia\Response;
 
 /**
  * Controller untuk mengelola data Bimbingan Tugas Akhir (Skripsi/Proposal).
@@ -18,25 +21,29 @@ class BimbinganController extends Controller
     /**
      * Menampilkan daftar bimbingan sesuai filter pencarian dan peran pengguna.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Inertia\Response
+     * @return Response
      */
     public function index(Request $request)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa magang tidak boleh mengakses halaman bimbingan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'skripsi') {
+            return redirect('/dashboard')->with('error', 'Halaman Bimbingan hanya tersedia untuk mahasiswa Skripsi.');
+        }
 
         $search = $request->input('search');
 
         // Query utama data bimbingan dengan eager loading relasi mahasiswa (user) dan dosen menggunakan query builder
         $query = Bimbingan::query()->with(['user:id,name', 'dosen:id,name'])
-            ->when($search, function($q, $search) {
+            ->when($search, function ($q, $search) {
                 $q->where('topik', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($qu) use ($search) {
-                      $qu->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('user', function ($qu) use ($search) {
+                        $qu->where('name', 'like', "%{$search}%");
+                    });
             });
 
         // Filter data berdasarkan peran (role) pengguna
@@ -56,15 +63,16 @@ class BimbinganController extends Controller
         $dosens = [];
 
         // Hanya Admin dan Kaprodi yang membutuhkan daftar dropdown lengkap mahasiswa & dosen
+        // Filter mahasiswas: hanya mahasiswa dengan kategori skripsi yang dapat memiliki bimbingan
         if (in_array($roleName, ['super_admin', 'ka_prodi'])) {
-            $mahasiswas = User::query()->whereHas('roles', function($q) {
+            $mahasiswas = User::query()->whereHas('roles', function ($q) {
                 $q->where('name', 'mahasiswa');
-            })->get();
+            })->where('kategori', 'skripsi')->get();
             $dosens = User::query()->where('nidn', '!=', '')
-                ->orWhereHas('roles', function($q) {
-                    $q->where(function($sq) {
+                ->orWhereHas('roles', function ($q) {
+                    $q->where(function ($sq) {
                         $sq->where('name', 'dosen')
-                           ->orWhere('name', 'ka_prodi');
+                            ->orWhere('name', 'ka_prodi');
                     });
                 })->get();
         }
@@ -81,15 +89,19 @@ class BimbinganController extends Controller
     /**
      * Menyimpan data bimbingan baru ke database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function store(Request $request)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa magang tidak boleh membuat bimbingan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'skripsi') {
+            return back()->with('error', 'Fitur Bimbingan hanya tersedia untuk mahasiswa Skripsi.');
+        }
 
         // Aturan validasi dasar
         $rules = [
@@ -154,16 +166,19 @@ class BimbinganController extends Controller
     /**
      * Memperbarui data bimbingan di database.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Bimbingan  $bimbingan
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request, Bimbingan $bimbingan)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa magang tidak boleh mengubah bimbingan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'skripsi') {
+            return back()->with('error', 'Fitur Bimbingan hanya tersedia untuk mahasiswa Skripsi.');
+        }
 
         $rules = [
             'topik' => 'required|string|min:5|max:255',
@@ -241,13 +256,12 @@ class BimbinganController extends Controller
      * Mengambil riwayat komentar dosen dari bimbingan-bimbingan sebelumnya milik mahasiswa tertentu.
      * Mengembalikan data dalam bentuk JSON (digunakan untuk modal AJAX).
      *
-     * @param  \App\Models\Bimbingan  $bimbingan
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function komentarHistory(Bimbingan $bimbingan)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
 
@@ -290,15 +304,19 @@ class BimbinganController extends Controller
     /**
      * Menghapus data bimbingan dari database.
      *
-     * @param  \App\Models\Bimbingan  $bimbingan
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function destroy(Bimbingan $bimbingan)
     {
         // Mendapatkan user yang sedang login saat ini
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $roleName = $user->roles->first()?->name;
+
+        // Mahasiswa magang tidak boleh menghapus bimbingan
+        if ($roleName === 'mahasiswa' && $user->kategori !== 'skripsi') {
+            return back()->with('error', 'Fitur Bimbingan hanya tersedia untuk mahasiswa Skripsi.');
+        }
 
         // Mahasiswa dilarang menghapus bimbingan milik orang lain
         if ($roleName === 'mahasiswa' && $bimbingan->user_id !== $user->id) {

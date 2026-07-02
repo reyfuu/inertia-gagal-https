@@ -20,6 +20,15 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
     const { auth } = usePage().props;
     const currentUser = auth.user;
     const roleName = currentUser.role;
+    const kategori = currentUser.kategori;
+
+    // Tentukan jenis laporan yang diizinkan berdasarkan kategori mahasiswa
+    const allowedTypes = roleName !== 'mahasiswa'
+        ? ['skripsi', 'proposal', 'magang']
+        : kategori === 'magang'
+            ? ['magang']
+            : ['skripsi', 'proposal'];
+    const defaultType = allowedTypes[0];
 
     const [searchVal, setSearchVal] = useState(filters.search || '');
     const [modalOpen, setModalOpen] = useState(false);
@@ -30,7 +39,7 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
         mahasiswa_id: '',
         dosen_id: '',
         judul: '',
-        type: 'skripsi',
+        type: defaultType,
         dokumen: '',
         status: 'pending',
         tanggal_mulai: new Date().toISOString().split('T')[0],
@@ -52,6 +61,7 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
                 ...prev,
                 mahasiswa_id: currentUser.id,
                 dosen_id: currentUser.dosen_pembimbing_id || '',
+                type: defaultType,
                 status: 'pending'
             }));
         }
@@ -212,7 +222,8 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
                                             <td className="py-4 px-6">
                                                 {getStatusBadge(l.status)}
                                             </td>
-                                            <td className="py-4 px-6 text-right space-x-2">
+                                            <td className="py-4 px-6">
+                                                <div className="flex items-center gap-2 justify-end">
                                                 <button
                                                     onClick={() => handleOpenEdit(l)}
                                                     className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-650 hover:text-indigo-600 dark:hover:text-indigo-200 text-gray-600 dark:text-slate-400 transition-all border border-gray-300 dark:border-slate-700/50 cursor-pointer"
@@ -229,6 +240,7 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
                                                         <Trash2 className="w-4 h-4" />
                                                     </button>
                                                 )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
@@ -315,9 +327,9 @@ export default function Index({ laporans, mahasiswas, dosens, filters }) {
                                         disabled={roleName === 'dosen'}
                                         className="w-full bg-gray-50 dark:bg-slate-950/50 border border-gray-300 dark:border-slate-800 rounded-xl py-2.5 px-3 text-sm text-gray-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60"
                                     >
-                                        <option value="skripsi">Skripsi</option>
-                                        <option value="proposal">Proposal</option>
-                                        <option value="magang">Magang</option>
+                                        {allowedTypes.includes('skripsi') && <option value="skripsi">Skripsi</option>}
+                                        {allowedTypes.includes('proposal') && <option value="proposal">Proposal</option>}
+                                        {allowedTypes.includes('magang') && <option value="magang">Magang</option>}
                                     </select>
                                     {errors.type && <p className="text-rose-400 text-xs">{errors.type}</p>}
                                 </div>

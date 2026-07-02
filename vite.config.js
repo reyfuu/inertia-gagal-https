@@ -67,6 +67,14 @@ export default defineConfig(({ mode }) => {
                     target: laravelUrl,
                     changeOrigin: true,
                     bypass: (req) => (shouldServeWithVite(req.url) ? req.url : undefined),
+                    configure: (proxy, _options) => {
+                        proxy.on('error', (err, _req, res) => {
+                            res.writeHead(502, {
+                                'Content-Type': 'text/plain',
+                            });
+                            res.end('Laravel dev server is starting or offline. Please refresh in a moment...');
+                        });
+                    },
                 },
             },
             watch: {

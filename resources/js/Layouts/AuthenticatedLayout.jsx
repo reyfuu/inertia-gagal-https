@@ -45,7 +45,20 @@ export default function AuthenticatedLayout({ children, title }) {
     ];
 
     const currentPath = window.location.pathname;
-    const filteredMenu = menuItems.filter(item => item.roles.includes(user?.role));
+    const filteredMenu = menuItems.filter(item => {
+        if (!item.roles.includes(user?.role)) {
+            return false;
+        }
+        if (user?.role === 'mahasiswa') {
+            if (item.name === 'Bimbingan' && user?.kategori !== 'skripsi') {
+                return false;
+            }
+            if (item.name === 'Laporan Mingguan' && user?.kategori !== 'magang') {
+                return false;
+            }
+        }
+        return true;
+    });
 
     const handleLogout = (e) => {
         e.preventDefault();
